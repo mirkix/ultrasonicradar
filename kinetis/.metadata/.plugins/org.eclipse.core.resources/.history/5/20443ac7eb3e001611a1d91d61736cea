@@ -1,0 +1,167 @@
+/*
+ * Copyright (c) 2013 - 2016, Freescale Semiconductor, Inc.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * o Redistributions of source code must retain the above copyright notice, this list
+ *   of conditions and the following disclaimer.
+ *
+ * o Redistributions in binary form must reproduce the above copyright notice, this
+ *   list of conditions and the following disclaimer in the documentation and/or
+ *   other materials provided with the distribution.
+ *
+ * o Neither the name of Freescale Semiconductor, Inc. nor the names of its
+ *   contributors may be used to endorse or promote products derived from this
+ *   software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+ * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+ * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
+ * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+ * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/**
+ * This is template for main module created by New Kinetis SDK 2.x Project Wizard. Enjoy!
+ **/
+
+#include "fsl_flexio.h"
+#include "fsl_debug_console.h"
+#include "board.h"
+#include "pin_mux.h"
+#include "clock_config.h"
+#include "fsl_flexio_ws2812.h"
+#include "fsl_flexio_hcsr04.h"
+
+void range() {
+
+}
+
+int main(void) {
+  /* Init board hardware. */
+  BOARD_InitPins();
+  BOARD_BootClockRUN();
+  BOARD_InitDebugConsole();
+
+  uint16_t range[8] = {0};
+
+  struct FLEXIO_WS2812_LED led;
+
+  /* Init and enable FlexIO */
+  CLOCK_EnableClock(kCLOCK_Flexio0);
+  flexio_config_t user_config = {
+  .enableFlexio = true,
+  .enableInDoze = false,
+  .enableInDebug = false,
+  .enableFastAccess = false
+  };
+  FLEXIO_Init(FLEXIO0, &user_config);
+  FLEXIO_Enable(FLEXIO0, true);
+  FLEXIO_WS2812_Init();
+  /* Init GPIO */
+  gpio_pin_config_t config =
+  {
+     kGPIO_DigitalOutput,
+     0,
+  };
+
+  GPIO_PinInit(GPIOA, 5U, &config);
+  GPIO_WritePinOutput(GPIOA, 5U, 0U);
+  GPIO_PinInit(GPIOA, 13U, &config);
+  GPIO_WritePinOutput(GPIOA, 13U, 0U);
+  GPIO_PinInit(GPIOA, 12U, &config);
+  GPIO_WritePinOutput(GPIOA, 12U, 0U);
+  GPIO_PinInit(GPIOA, 17U, &config);
+  GPIO_WritePinOutput(GPIOA, 17U, 0U);
+  GPIO_PinInit(GPIOA, 14U, &config);
+  GPIO_WritePinOutput(GPIOA, 14U, 0U);
+  GPIO_PinInit(GPIOC, 7U, &config);
+  GPIO_WritePinOutput(GPIOC, 7U, 0U);
+  GPIO_PinInit(GPIOA, 16U, &config);
+  GPIO_WritePinOutput(GPIOA, 16U, 0U);
+  GPIO_PinInit(GPIOA, 15U, &config);
+  GPIO_WritePinOutput(GPIOA, 15U, 0U);
+
+  while(1) {
+	  char ch = GETCHAR();
+      switch(ch) {
+      case 'r':
+    	  led.r = 255;
+    	  led.g = 0;
+    	  led.b = 0;
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_TransmitBuffer();
+    	  break;
+      case 'g':
+    	  led.r = 0;
+    	  led.g = 255;
+    	  led.b = 0;
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_TransmitBuffer();
+    	  break;
+      case 'b':
+    	  led.r = 0;
+    	  led.g = 0;
+    	  led.b = 255;
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_TransmitBuffer();
+    	  break;
+      case 'o':
+    	  led.r = 0;
+    	  led.g = 0;
+    	  led.b = 0;
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_Update(&led);
+    	  FLEXIO_WS2812_TransmitBuffer();
+    	  break;
+      case 's':
+    	  PRINTF("Serial test\r\n");
+    	  break;
+      case 'p':
+    		range[0] = FLEXIO_HCSR_Ping(0, GPIOA, 5);	// 0
+    		range[1] = FLEXIO_HCSR_Ping(2, GPIOA, 13);	// 45
+    		range[2] = FLEXIO_HCSR_Ping(3, GPIOA, 12);	// 90
+    		range[3] = FLEXIO_HCSR_Ping(4, GPIOA, 17);	// 135
+    		range[4] = FLEXIO_HCSR_Ping(5, GPIOA, 14);	// 180
+    		range[5] = FLEXIO_HCSR_Ping(6, GPIOC, 7);	// 225
+    		range[6] = FLEXIO_HCSR_Ping(7, GPIOA, 16);	// 270
+    		range[7] = FLEXIO_HCSR_Ping(8, GPIOA, 15);	// 315
+    		PRINTF("%d,%d,%d,%d,%d,%d,%d,%d\r\n", range[0], range[1], range[2], range[3], range[4], range[5], range[6], range[7]);
+    		break;
+      }
+  }
+}

@@ -1,0 +1,20 @@
+22:44:31 **** Incremental Build of configuration Debug for project ultrasonicradar ****
+make -j2 all 
+Building target: ultrasonicradar.elf
+Invoking: Cross ARM C++ Linker
+arm-none-eabi-g++ -mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -O0 -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections -Wall  -g3 -T "../MK82FN256xxx15_flash.ld" -Xlinker --gc-sections -Wl,-Map,"ultrasonicradar.map" -specs=nosys.specs -specs=nano.specs -Xlinker -z -Xlinker muldefs -o "ultrasonicradar.elf"  ./utilities/fsl_debug_console.o ./utilities/fsl_notifier.o ./utilities/fsl_sbrk.o  ./startup/startup_MK82F25615.o ./startup/system_MK82F25615.o  ./source/fsl_flexio_hcsr04.o ./source/fsl_flexio_ws2812.o ./source/main.o  ./drivers/fsl_clock.o ./drivers/fsl_cmp.o ./drivers/fsl_cmt.o ./drivers/fsl_common.o ./drivers/fsl_crc.o ./drivers/fsl_dac.o ./drivers/fsl_dmamux.o ./drivers/fsl_dspi.o ./drivers/fsl_dspi_edma.o ./drivers/fsl_edma.o ./drivers/fsl_ewm.o ./drivers/fsl_flash.o ./drivers/fsl_flexbus.o ./drivers/fsl_flexio.o ./drivers/fsl_ftm.o ./drivers/fsl_gpio.o ./drivers/fsl_i2c.o ./drivers/fsl_i2c_edma.o ./drivers/fsl_llwu.o ./drivers/fsl_lmem_cache.o ./drivers/fsl_lptmr.o ./drivers/fsl_lpuart.o ./drivers/fsl_lpuart_edma.o ./drivers/fsl_ltc.o ./drivers/fsl_ltc_edma.o ./drivers/fsl_mpu.o ./drivers/fsl_pdb.o ./drivers/fsl_pit.o ./drivers/fsl_pmc.o ./drivers/fsl_qspi.o ./drivers/fsl_qspi_edma.o ./drivers/fsl_rcm.o ./drivers/fsl_rtc.o ./drivers/fsl_sai.o ./drivers/fsl_sai_edma.o ./drivers/fsl_sdhc.o ./drivers/fsl_sdramc.o ./drivers/fsl_sim.o ./drivers/fsl_smartcard_emvsim.o ./drivers/fsl_smartcard_phy_emvsim.o ./drivers/fsl_smartcard_phy_ncn8025.o ./drivers/fsl_smc.o ./drivers/fsl_tpm.o ./drivers/fsl_trng.o ./drivers/fsl_tsi_v4.o ./drivers/fsl_vref.o ./drivers/fsl_wdog.o  ./board/board.o ./board/clock_config.o ./board/pin_mux.o   
+Finished building target: ultrasonicradar.elf
+ 
+Invoking: Cross ARM GNU Create Flash Image
+arm-none-eabi-objcopy -O ihex "ultrasonicradar.elf"  "ultrasonicradar.hex"
+Invoking: Cross ARM GNU Print Size
+arm-none-eabi-size --format=berkeley "ultrasonicradar.elf"
+   text	   data	    bss	    dec	    hex	filename
+  30472	    120	   5024	  35616	   8b20	ultrasonicradar.elf
+Finished building: ultrasonicradar.hex
+Finished building: ultrasonicradar.siz
+ 
+ 
+
+22:44:31 Build Finished (took 346ms)
+

@@ -1,0 +1,109 @@
+/*
+ * fsl_flexio_hcsr04.c
+ *
+ *  Created on: 29.06.2016
+ *      Author: mirko
+ */
+
+#include "fsl_flexio_hcsr04.h"
+
+void FLEXIO_HCSR_Init(uint8_t echo) {
+	flexio_timer_config_t timerConfig;
+	flexio_shifter_config_t shifterConfig;
+
+	memset(&timerConfig, 0, sizeof(timerConfig));
+	memset(&shifterConfig, 0, sizeof(shifterConfig));
+
+	timerConfig.triggerSelect = FLEXIO_TIMER_TRIGGER_SEL_TIMn(3);
+	timerConfig.triggerPolarity = kFLEXIO_TimerTriggerPolarityActiveHigh;
+	timerConfig.triggerSource = kFLEXIO_TimerTriggerSourceInternal;
+	timerConfig.pinConfig = kFLEXIO_PinConfigOutputDisabled;
+	timerConfig.pinSelect = 2;
+	timerConfig.pinPolarity = kFLEXIO_PinActiveHigh;
+	timerConfig.timerMode = kFLEXIO_TimerModeSingle16Bit;
+	timerConfig.timerOutput = kFLEXIO_TimerOutputZeroNotAffectedByReset;
+	timerConfig.timerDecrement = kFLEXIO_TimerDecSrcOnTriggerInputShiftTriggerInput;
+	timerConfig.timerReset = kFLEXIO_TimerResetNever;
+	timerConfig.timerDisable = kFLEXIO_TimerDisableOnTimerCompareTriggerLow;
+	timerConfig.timerEnable = kFLEXIO_TimerEnableOnTriggerRisingEdge;
+	timerConfig.timerStop = kFLEXIO_TimerStopBitDisabled;
+	timerConfig.timerStart = kFLEXIO_TimerStartBitDisabled;
+	timerConfig.timerCompare = 256U;
+	FLEXIO_SetTimerConfig(FLEXIO0, 2, &timerConfig);
+
+	timerConfig.triggerSelect = FLEXIO_TIMER_TRIGGER_SEL_PININPUT(echo);
+	timerConfig.triggerPolarity = kFLEXIO_TimerTriggerPolarityActiveHigh;
+	timerConfig.triggerSource = kFLEXIO_TimerTriggerSourceInternal;
+	timerConfig.pinConfig = kFLEXIO_PinConfigOutputDisabled;
+	timerConfig.pinSelect = 2;
+	timerConfig.pinPolarity = kFLEXIO_PinActiveHigh;
+	timerConfig.timerMode = kFLEXIO_TimerModeSingle16Bit;
+	timerConfig.timerOutput = kFLEXIO_TimerOutputZeroNotAffectedByReset;
+	timerConfig.timerDecrement = kFLEXIO_TimerDecSrcOnFlexIOClockShiftTimerOutput;
+	timerConfig.timerReset = kFLEXIO_TimerResetOnTimerTriggerRisingEdge;
+	timerConfig.timerDisable = kFLEXIO_TimerDisableOnPreTimerDisable;
+	timerConfig.timerEnable = kFLEXIO_TimerEnableOnTriggerRisingEdge;
+	timerConfig.timerStop = kFLEXIO_TimerStopBitDisabled;
+	timerConfig.timerStart = kFLEXIO_TimerStartBitDisabled;
+	timerConfig.timerCompare = 6960U;
+	FLEXIO_SetTimerConfig(FLEXIO0, 3, &timerConfig);
+
+	shifterConfig.timerSelect = 2;
+	shifterConfig.timerPolarity = kFLEXIO_ShifterTimerPolarityOnPositive;
+	shifterConfig.pinConfig = kFLEXIO_PinConfigOutputDisabled;
+	shifterConfig.pinSelect = 1;
+	shifterConfig.pinPolarity = kFLEXIO_PinActiveHigh;
+	shifterConfig.shifterMode = kFLEXIO_ShifterModeReceive;
+	shifterConfig.inputSource = kFLEXIO_ShifterInputFromNextShifterOutput;
+	shifterConfig.shifterStop = kFLEXIO_ShifterStopBitDisable;
+	shifterConfig.shifterStart = kFLEXIO_ShifterStartBitDisabledLoadDataOnEnable;
+	FLEXIO_SetShifterConfig(FLEXIO0, 0, &shifterConfig);
+
+	shifterConfig.timerSelect = 2;
+	shifterConfig.timerPolarity = kFLEXIO_ShifterTimerPolarityOnPositive;
+	shifterConfig.pinConfig = kFLEXIO_PinConfigOutputDisabled;
+	shifterConfig.pinSelect = 1;
+	shifterConfig.pinPolarity = kFLEXIO_PinActiveHigh;
+	shifterConfig.shifterMode = kFLEXIO_ShifterModeReceive;
+	shifterConfig.inputSource = kFLEXIO_ShifterInputFromNextShifterOutput;
+	shifterConfig.shifterStop = kFLEXIO_ShifterStopBitDisable;
+	shifterConfig.shifterStart = kFLEXIO_ShifterStartBitDisabledLoadDataOnEnable;
+	FLEXIO_SetShifterConfig(FLEXIO0, 1, &shifterConfig);
+
+	shifterConfig.timerSelect = 2;
+	shifterConfig.timerPolarity = kFLEXIO_ShifterTimerPolarityOnPositive;
+	shifterConfig.pinConfig = kFLEXIO_PinConfigOutputDisabled;
+	shifterConfig.pinSelect = 1;
+	shifterConfig.pinPolarity = kFLEXIO_PinActiveHigh;
+	shifterConfig.shifterMode = kFLEXIO_ShifterModeReceive;
+	shifterConfig.inputSource = kFLEXIO_ShifterInputFromNextShifterOutput;
+	shifterConfig.shifterStop = kFLEXIO_ShifterStopBitDisable;
+	shifterConfig.shifterStart = kFLEXIO_ShifterStartBitDisabledLoadDataOnEnable;
+	FLEXIO_SetShifterConfig(FLEXIO0, 2, &shifterConfig);
+
+	shifterConfig.timerSelect = 2;
+	shifterConfig.timerPolarity = kFLEXIO_ShifterTimerPolarityOnPositive;
+	shifterConfig.pinConfig = kFLEXIO_PinConfigOutputDisabled;
+	shifterConfig.pinSelect = echo;
+	shifterConfig.pinPolarity = kFLEXIO_PinActiveHigh;
+	shifterConfig.shifterMode = kFLEXIO_ShifterModeReceive;
+	shifterConfig.inputSource = kFLEXIO_ShifterInputFromPin;
+	shifterConfig.shifterStop = kFLEXIO_ShifterStopBitDisable;
+	shifterConfig.shifterStart = kFLEXIO_ShifterStartBitDisabledLoadDataOnEnable;
+	FLEXIO_SetShifterConfig(FLEXIO0, 3, &shifterConfig);
+}
+
+uint16_t FLEXIO_HCSR_Ping(uint8_t echo, GPIO_Type *base, uint32_t pin) {
+	volatile uint16_t i = 0;
+	FLEXIO_HCSR_Init(echo);
+	GPIO_WritePinOutput(base, pin, 1U);
+	while(i < 200) {
+		i++;
+	}
+	i = 0;
+	GPIO_WritePinOutput(base, pin, 0U);
+	while((FLEXIO_GetShifterStatusFlags(FLEXIO0) & 15) != 15) {
+		;
+	}
+	return (__builtin_popcount(FLEXIO0->SHIFTBUF[0]) + __builtin_popcount(FLEXIO0->SHIFTBUF[1]) + __builtin_popcount(FLEXIO0->SHIFTBUF[2]) + __builtin_popcount(FLEXIO0->SHIFTBUF[3])) * 2;
+}

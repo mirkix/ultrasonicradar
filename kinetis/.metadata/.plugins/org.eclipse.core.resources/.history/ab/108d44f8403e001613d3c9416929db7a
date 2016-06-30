@@ -1,0 +1,57 @@
+/*
+ * fsl_flexio_ws2812.c
+ *
+ *  Created on: 29.06.2016
+ *      Author: mirko
+ */
+
+
+void FLEXIO_WS2812_transmitbuffer() {
+	for(uint8_t i = 0; i < 25; i++) {
+		while(!(FLEXIO_GetShifterStatusFlags(FLEXIO0) & (1 << 7)))
+		{
+			;
+		}
+		FLEXIO0->SHIFTBUF[7] = buffers[i];
+		buffers[i] = 0U;
+	}
+    bufferindex = 0;
+    buffersindex = 0;
+}
+
+void FLEXIO_WS2812InsertBuffer(uint8_t value) {
+
+	if(value) {
+		buffers[buffersindex] |= 1 << bufferindex;
+	}
+	bufferindex++;
+
+	if(bufferindex >= 32) {
+		buffersindex++;
+		bufferindex = 0;
+		PRINTF("%d\r\n", buffersindex);
+		//		ws2812transmitbuffer();
+	}
+}
+
+void FLEXIO_WS2812SendByte(uint8_t byte) {
+	for(uint8_t i = 0;  i < 8; i++) {
+		if(byte & 1 << (7 - i)) {
+			FLEXIO_WS2812InsertBuffer(1);
+			FLEXIO_WS2812InsertBuffer(1);
+			FLEXIO_WS2812InsertBuffer(0);
+			FLEXIO_WS2812InsertBuffer(0);
+		} else {
+			FLEXIO_WS2812InsertBuffer(1);
+			FLEXIO_WS2812InsertBuffer(0);
+			FLEXIO_WS2812InsertBuffer(0);
+		}
+	}
+}
+
+
+void FLEXIO_WS2812Update(const struct Led *led) {
+	WS2812SendByte(led->g);
+	WS2812SendByte(led->r);
+	WS2812SendByte(led->b);
+}

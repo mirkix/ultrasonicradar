@@ -1,0 +1,20 @@
+#ifndef SOURCE_FSL_FLEXIO_WS2812_H_
+#define SOURCE_FSL_FLEXIO_WS2812_H_
+
+#include <stdint.h>
+
+struct FLEXIO_WS2812_LED {
+	uint8_t r;
+	uint8_t g;
+	uint8_t b;
+};
+
+static uint8_t flexio_ws2812_bufferindex = 0;
+static uint8_t flexio_ws2812_bufferiindex = 0;
+static uint32_t flexio_ws2812_buffer[25] = {0};
+
+void FLEXIO_WS2812_Init();
+void FLEXIO_WS2812_TransmitBuffer();
+void FLEXIO_WS2812_Update(const struct FLEXIO_WS2812_LED *led);
+
+#endif /* SOURCE_FSL_FLEXIO_WS2812_H_ */

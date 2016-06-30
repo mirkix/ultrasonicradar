@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;ultrasonicradar/source/fsl_flexio_ws2812-h&apos; to &apos;fsl_flexio_ws2812.h&apos;" description="Rename resource &apos;fsl_flexio_ws2812-h&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="source/fsl_flexio_ws2812-h" name="fsl_flexio_ws2812.h" stamp="1467235216081" updateReferences="true"/>
+</session>

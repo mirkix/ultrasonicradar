@@ -1,0 +1,105 @@
+/*
+ * fsl_flexio_ws2812.c
+ *
+ *  Created on: 29.06.2016
+ *      Author: mirko
+ */
+
+void FLEXIO_WS2812_Init() {
+	flexio_timer_config_t timerConfig;
+	flexio_shifter_config_t shifterConfig;
+
+	memset(&timerConfig, 0, sizeof(timerConfig));
+	memset(&shifterConfig, 0, sizeof(shifterConfig));
+
+	timerConfig.triggerSelect = FLEXIO_TIMER_TRIGGER_SEL_TIMn(5);
+	timerConfig.triggerPolarity = kFLEXIO_TimerTriggerPolarityActiveLow;
+	timerConfig.triggerSource = kFLEXIO_TimerTriggerSourceInternal;
+	timerConfig.pinConfig = kFLEXIO_PinConfigOutput;
+	timerConfig.pinSelect = 10;
+	timerConfig.pinPolarity = kFLEXIO_PinActiveLow;
+	timerConfig.timerMode = kFLEXIO_TimerModeSingle16Bit;
+	timerConfig.timerOutput = kFLEXIO_TimerOutputOneNotAffectedByReset;
+	timerConfig.timerDecrement = kFLEXIO_TimerDecSrcOnTriggerInputShiftTriggerInput;
+	timerConfig.timerReset = kFLEXIO_TimerResetNever;
+	timerConfig.timerDisable = kFLEXIO_TimerDisableOnTimerCompare;//kFLEXIO_TimerDisableNever;
+	timerConfig.timerEnable = kFLEXIO_TimerEnableOnTriggerRisingEdge;//kFLEXIO_TimerEnabledAlways;
+	timerConfig.timerStop = kFLEXIO_TimerStopBitDisabled;
+	timerConfig.timerStart = kFLEXIO_TimerStartBitDisabled;
+	timerConfig.timerCompare = 62U;
+	FLEXIO_SetTimerConfig(FLEXIO0, 4, &timerConfig);
+
+	timerConfig.triggerSelect = 0;
+	timerConfig.triggerPolarity = kFLEXIO_TimerTriggerPolarityActiveHigh;
+	timerConfig.triggerSource = kFLEXIO_TimerTriggerSourceInternal;
+	timerConfig.pinConfig = kFLEXIO_PinConfigOutputDisabled;
+	timerConfig.pinSelect = 10;
+	timerConfig.pinPolarity = kFLEXIO_PinActiveLow;
+	timerConfig.timerMode = kFLEXIO_TimerModeSingle16Bit;
+	timerConfig.timerOutput = kFLEXIO_TimerOutputZeroNotAffectedByReset;
+	timerConfig.timerDecrement = kFLEXIO_TimerDecSrcOnFlexIOClockShiftTimerOutput;
+	timerConfig.timerReset = kFLEXIO_TimerResetNever;
+	timerConfig.timerDisable = kFLEXIO_TimerDisableNever;
+	timerConfig.timerEnable = kFLEXIO_TimerEnabledAlways;
+	timerConfig.timerStop = kFLEXIO_TimerStopBitDisabled;
+	timerConfig.timerStart = kFLEXIO_TimerStartBitDisabled;
+	timerConfig.timerCompare = 20U;
+	FLEXIO_SetTimerConfig(FLEXIO0, 5, &timerConfig);
+
+	shifterConfig.timerSelect = 4;
+	shifterConfig.timerPolarity = kFLEXIO_ShifterTimerPolarityOnNegitive;
+	shifterConfig.pinConfig = kFLEXIO_PinConfigOutput;
+	shifterConfig.pinSelect = 9;
+	shifterConfig.pinPolarity = kFLEXIO_PinActiveHigh;
+	shifterConfig.shifterMode = kFLEXIO_ShifterModeTransmit;
+	shifterConfig.inputSource = kFLEXIO_ShifterInputFromPin;
+	shifterConfig.shifterStop = kFLEXIO_ShifterStopBitDisable;
+	shifterConfig.shifterStart = kFLEXIO_ShifterStartBitDisabledLoadDataOnShift;
+	FLEXIO_SetShifterConfig(FLEXIO0, 7, &shifterConfig);
+}
+
+void FLEXIO_WS2812_TransmitBuffer() {
+	for(uint8_t i = 0; i < 25; i++) {
+		while(!(FLEXIO_GetShifterStatusFlags(FLEXIO0) & (1 << 7)))
+		{
+			;
+		}
+		FLEXIO0->SHIFTBUF[7] = buffers[i];
+		buffers[i] = 0U;
+	}
+    bufferindex = 0;
+    buffersindex = 0;
+}
+
+void FLEXIO_WS2812_InsertBuffer(uint8_t value) {
+	if(value) {
+		buffers[buffersindex] |= 1 << bufferindex;
+	}
+	bufferindex++;
+
+	if(bufferindex >= 32) {
+		buffersindex++;
+		bufferindex = 0;
+	}
+}
+
+void FLEXIO_WS2812_SendByte(uint8_t byte) {
+	for(uint8_t i = 0;  i < 8; i++) {
+		if(byte & 1 << (7 - i)) {
+			FLEXIO_WS2812InsertBuffer(1);
+			FLEXIO_WS2812InsertBuffer(1);
+			FLEXIO_WS2812InsertBuffer(0);
+			FLEXIO_WS2812InsertBuffer(0);
+		} else {
+			FLEXIO_WS2812InsertBuffer(1);
+			FLEXIO_WS2812InsertBuffer(0);
+			FLEXIO_WS2812InsertBuffer(0);
+		}
+	}
+}
+
+void FLEXIO_WS2812_Update(const struct FLEXIO_WS2812_TransmitBuffer *led) {
+	WS2812SendByte(led->g);
+	WS2812SendByte(led->r);
+	WS2812SendByte(led->b);
+}
