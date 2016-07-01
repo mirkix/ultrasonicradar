@@ -40,6 +40,7 @@
 #include "fsl_flexio_ws2812.h"
 #include "fsl_flexio_hcsr04.h"
 
+/* WS2812 LEDs */
 #define LED_180 0
 #define LED_225 1
 #define LED_270 2
@@ -49,11 +50,13 @@
 #define LED_90 6
 #define LED_135 7
 
+#define NUM_LEDS 8
+
 static uint16_t range[8] = {0};
-static struct FLEXIO_WS2812_LED leds[8];
+static struct FLEXIO_WS2812_LED leds[NUM_LEDS];
 
 void updateleds() {
-	for(uint8_t i = 0; i < 8; i++) {
+	for(uint8_t i = 0; i < NUM_LEDS; i++) {
 		FLEXIO_WS2812_Update(&leds[i]);
 	}
 	FLEXIO_WS2812_TransmitBuffer();
@@ -117,7 +120,7 @@ int main(void) {
   BOARD_BootClockRUN();
   BOARD_InitDebugConsole();
 
-  for(uint8_t i = 0; i < 8; i++) {
+  for(uint8_t i = 0; i < NUM_LEDS; i++) {
 	  leds[i].r = 0;
 	  leds[i].g = 0;
 	  leds[i].b = 0;
@@ -164,9 +167,12 @@ int main(void) {
   GPIO_WritePinOutput(GPIOA, 15U, 0U);
 
   while(1) {
+	  /* Read serial char */
 	  char ch = GETCHAR();
 
       switch(ch) {
+
+      /* All LEDs red */
       case 'r':
     	  led.r = 255;
     	  led.g = 0;
@@ -181,6 +187,8 @@ int main(void) {
     	  FLEXIO_WS2812_Update(&led);
     	  FLEXIO_WS2812_TransmitBuffer();
     	  break;
+
+      /* All LEDs green */
       case 'g':
     	  led.r = 0;
     	  led.g = 255;
@@ -195,6 +203,8 @@ int main(void) {
     	  FLEXIO_WS2812_Update(&led);
     	  FLEXIO_WS2812_TransmitBuffer();
     	  break;
+
+      /* All LEDs red */
       case 'b':
     	  led.r = 0;
     	  led.g = 0;
@@ -209,6 +219,8 @@ int main(void) {
     	  FLEXIO_WS2812_Update(&led);
     	  FLEXIO_WS2812_TransmitBuffer();
     	  break;
+
+      /* All LEDs off */
       case 'o':
     	  led.r = 0;
     	  led.g = 0;
@@ -223,9 +235,13 @@ int main(void) {
     	  FLEXIO_WS2812_Update(&led);
     	  FLEXIO_WS2812_TransmitBuffer();
     	  break;
+
+      /* Serial test */
       case 's':
     	  PRINTF("Serial test\r\n");
     	  break;
+
+      /* Start measurement */
       case 'p':
     	  updaterange();
     	  PRINTF("%d,%d,%d,%d,%d,%d,%d,%d\r\n", range[0], range[1], range[2], range[3], range[4], range[5], range[6], range[7]);
